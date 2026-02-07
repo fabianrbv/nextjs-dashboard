@@ -69,8 +69,9 @@ export async function createInvoice(prevState: State, formData: FormData) {
     };
   }
 
-  // Revalidate the cache for the invoices page and redirect the user.
+  // Revalidate the cache for the invoices page and dashboard, then redirect the user.
   revalidatePath('/dashboard/invoices');
+  revalidatePath('/dashboard');
   redirect('/dashboard/invoices');
 }
 
@@ -106,15 +107,20 @@ export async function updateInvoice(
   }
 
   revalidatePath('/dashboard/invoices');
+  revalidatePath('/dashboard');
   redirect('/dashboard/invoices');
 }
 
 export async function deleteInvoice(id: string) {
-  throw new Error('Failed to Delete Invoice');
+  try {
+    await sql`DELETE FROM invoices WHERE id = ${id}`;
+  } catch (error) {
+    return { message: 'Database Error: Failed to Delete Invoice.' };
+  }
 
-  // Unreachable code block
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
   revalidatePath('/dashboard/invoices');
+  revalidatePath('/dashboard');
+  redirect('/dashboard/invoices');
 }
 
 export async function authenticate(
