@@ -14,6 +14,8 @@ export const metadata: Metadata = {
   title: 'Dashboard',
 };
 
+export const revalidate = 0;
+
 export default async function Page() {
   return (
     <main>
